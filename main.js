@@ -75,28 +75,50 @@
         .enter()
             .append('g');
 
-    g.append('path')
+    var path = g.append('path')
         .attr('fill', function (datum) { return datum.color; })
         .attr('stroke', '#ffffff')
         .attr('stroke-width', margin)
         .attr('d', sections);
 
-    g.append('text')
+    var text = g.append('text')
         .attr('fill', '#ffffff')
-        .attr('font-size', '10px')
+        .attr('font-size', function () { return diameter * 0.02; })
         .attr('font-family', 'sans-serif')
+        .attr('text-anchor', 'middle')
         .attr('transform', function (datum) {
-            let x = datum.centroid[0];
-            let y = datum.centroid[1];
-            let mid = datum.label.length / 2;
-            datum.centroid[0] = x - mid*7;
             return 'translate(' + datum.centroid + ')';
+        });
+
+    var tspan = text.selectAll('tspan')
+        .data(function (datum) {
+            var MAXIMUM_CHARS_PER_LINE = 10;
+            var words = datum.label.split(' ');
+            var lines = [words[0]];
+            var linenum = 0;
+
+            for (var i = 1, len = words.length; i < len; i++) {
+                var test = lines[linenum] + ' ' + words[i];
+                if (test.length <= MAXIMUM_CHARS_PER_LINE) {
+                    lines[linenum] = test;
+                } else {
+                    lines[linenum] = lines[linenum].trim();
+                    lines.push(words[i]);
+                    linenum++;
+                }
+            }
+
+            return lines;
         })
-        .text(function (datum) { return datum.label.toUpperCase(); })
+        .enter()
+        .append('tspan')
+            .attr('x', 0)
+            .attr('y', function (line, index, lines) { return (diameter * 0.028) * index - (diameter * 0.028 / 2) * (lines.length - 1); })
+            .text(function (line) { return line.toUpperCase(); });
 
     function centroid(startAngle, endAngle, innerRadius, outerRadius) {
         var r = (innerRadius + outerRadius) / 2,
-            a = (startAngle + endAngle) / 2;
+            a = (startAngle + endAngle) / 2 + 0.05;
         return [Math.cos(a) * r, Math.sin(a) * r];
     }
 
