@@ -1,17 +1,31 @@
-.arc text {
-    font: 12px sans-serif;
+body {
+    margin: 0;
+}
+
+.chart {
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden {
+    opacity: 0;
+}
+
+.section {
+    fill: #ffffff;
+    cursor: pointer;
+    font-family: sans-serif;
     text-anchor: middle;
-}
-
-.arc path {
-    stroke: #fff;
-}
-
-.arc2 text {
-    font: 10px sans-serif;
-    text-anchor: middle;
-}
-
-.arc2 path {
-    stroke: #fff;
+    -webkit-animation-duration: 0.5s !important;
+    -moz-animation-duration: 0.5s !important;
+    -webkit-animation-delay: 0 !important;
+    -moz-animation-delay: 0 !important;
 }

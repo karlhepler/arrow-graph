@@ -12,13 +12,19 @@
 
     //----- SETTINGS -----------------------------------// 
     var diameter = 500;
-    var arrow = 0.1;
-    var margin = 5;
-    var radius = {
-        inner: diameter / 4 - margin / 2,
-        midway: diameter / 4 + diameter / 8,
-        outer: diameter / 2 + margin/2,
+    var arrow = 0.2;
+    var margin = 30;
+    var radius = { outer: diameter / 2 - margin };
+    radius.inner = radius.outer / 3 + margin;
+    radius.midway = radius.outer / 2 + radius.inner / 2;
+    var fontSize = diameter * 0.02;
+    var padding = 3;
+    var padAngle = {
+        outer: padding / radius.outer,
+        midway: padding / radius.midway,
+        inner: padding / radius.inner,
     };
+    var arrowAngle = 0.1;
 
     //----- CREATE THE SVG CONTAINER -------------------// 
     var svg = d3.select('.chart')
@@ -26,33 +32,40 @@
             .attr('width', diameter)
             .attr('height', diameter)
             .append('g')
-                .attr('transform', 'translate(' + (radius.outer-margin/2) + ',' + (radius.outer-margin/2) + ')');
+                .attr('transform', 'translate(' + (radius.outer + margin) + ',' + (radius.outer + margin) + ')');
 
     //----- CREATE A G FOR EACH DATUM ------------------// 
     var g = svg.selectAll('path')
         .data(data)
         .enter()
             .append('g')
-            .attr('cursor', 'pointer')
-            .on('click', function (datum) {
-                location.href = datum.href;
-            });
+                .attr('class', 'section hidden')
+                .on('mouseenter', function (datum) {
+                    this.classList.remove('bounceIn');
+                    this.classList.remove('pulse');
+                    setTimeout(function () { this.classList.add('pulse'); }.bind(this))
+                    setTimeout(function () { this.classList.remove('pulse'); }.bind(this), 1000);
+                })
+                .on('click', function (datum) {
+                    this.classList.remove('jello');
+                    setTimeout(function () { this.classList.add('jello'); }.bind(this));
+                    setTimeout(function () { this.classList.remove('jello'); }.bind(this), 1000);
+                    console.log(datum);
+                });
 
     //----- CREATE THE PATH & THROW IN THE SECTIONS ----// 
     var path = g.append('path')
         .attr('fill', function (datum) { return datum.color; })
-        .attr('stroke', '#ffffff')
-        .attr('stroke-width', margin)
-        .transition()
-        .delay(function (datum, index) { return index * 50; })
         .attr('d', section);
+
+   //----- DO SOME ANIMATIONS -------------------------// 
+    g.transition()
+        .delay(function (datum, index) { return index * 100; })
+        .attr('class', 'section animated bounceIn');
 
     //----- CREATE TEXT AROUND CENTROID ----------------// 
     var text = g.append('text')
-        .attr('fill', '#ffffff')
-        .attr('font-size', function () { return diameter * 0.02; })
-        .attr('font-family', 'sans-serif')
-        .attr('text-anchor', 'middle')
+        .attr('font-size', function () { return fontSize; })
         .attr('transform', function (datum) {
             return 'translate(' + datum.centroid + ')';
         });
@@ -83,7 +96,7 @@
             .attr('x', 0)
             // With every new line, the entire thing needs to be moved up some
             .attr('y', function (line, index, lines) {
-                return ((diameter * 0.028) * index) - ((diameter * 0.028 / 2) * (lines.length - 1));
+                return (2 * Math.SQRT2 * diameter * index - (lines.length - 1)) / 100
             })
             .text(function (line) {
                 return line.toUpperCase();
@@ -94,36 +107,36 @@
          var angle = 2 * Math.PI / paths.length;
          var nextIndex = index + 1;
 
-         // Calculate & save the centroid
+         // Calculate the text centroid
          datum.centroid = centroid(
-             angle*index, angle*nextIndex,
-             radius.inner, radius.outer 
+             angle*index+arrowAngle+padAngle.midway, angle*nextIndex+arrowAngle-padAngle.midway,
+             radius.midway
          );
 
          var path = d3.path();
 
          // Start
          path.moveTo(
-             radius.outer * Math.cos(angle*index),
-             radius.outer * Math.sin(angle*index)
-         );
+             radius.outer * Math.cos(angle*index+padAngle.outer),
+             radius.outer * Math.sin(angle*index+padAngle.outer)
+        );
 
          // Curve outer radius
-         path.arc(0, 0, radius.outer, angle*index, angle*nextIndex);
+         path.arc(0, 0, radius.outer, angle*index+padAngle.outer, angle*nextIndex-padAngle.outer);
 
-         // Half arrow line to midway radius
+         // Midway angle
          path.lineTo(
-             radius.midway * Math.cos(angle*nextIndex+arrow),
-             radius.midway * Math.sin(angle*nextIndex+arrow)
-         );
+             radius.midway * Math.cos(angle*nextIndex+arrowAngle-padAngle.midway),
+             radius.midway * Math.sin(angle*nextIndex+arrowAngle-padAngle.midway)
+        );
 
          // Curve inner radius
-         path.arc(0, 0, radius.inner, angle*nextIndex, angle*index, true);
+         path.arc(0, 0, radius.inner, angle*nextIndex-padAngle.inner, angle*index+padAngle.inner, true);
 
-         // Half arrow line to outer radius
+         // Midway angle
          path.lineTo(
-             radius.midway * Math.cos(angle*index+arrow),
-             radius.midway * Math.sin(angle*index+arrow)
+             radius.midway * Math.cos(angle*index+arrowAngle+padAngle.midway),
+             radius.midway * Math.sin(angle*index+arrowAngle+padAngle.midway)
          );
 
          // Close the path
@@ -133,9 +146,9 @@
      }
 
     //----- CALCULATE CENTROID -------------------------// 
-    function centroid(startAngle, endAngle, innerRadius, outerRadius) {
-        var r = (innerRadius + outerRadius) / 2,
-            a = (startAngle + endAngle) / 2 + 0.05; // Not sure why I had to do 0.05, but it worked
+    function centroid(startAngle, endAngle, radius) {
+        var r = radius,
+            a = (startAngle + endAngle) / 2;
         return [Math.cos(a) * r, Math.sin(a) * r];
     }
 
