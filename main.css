@@ -24,6 +24,7 @@ body {
     cursor: pointer;
     font-family: sans-serif;
     text-anchor: middle;
+    text-transform: uppercase;
     -webkit-animation-duration: 0.5s !important;
     -moz-animation-duration: 0.5s !important;
     -webkit-animation-delay: 0 !important;
