@@ -15,6 +15,7 @@ var Graph;
 
         //----- CALCULATIONS -------------------------------// 
         FONT_SIZE = DIAMETER * FONT_SIZE_RATIO,
+        LINE_SPACING = FONT_SIZE / 2,
         OUTER_RADIUS = DIAMETER / 2 - GRAPH_PADDING,
         OUTER_PAD_ANGLE = ARC_PADDING / OUTER_RADIUS,
         INNER_RADIUS = OUTER_RADIUS - OUTER_RADIUS * INNER_RATIO,
@@ -24,7 +25,14 @@ var Graph;
 
     //----- GRAPH CONSTRUCTOR --------------------------// 
     Graph = function Graph(DATA) {
+        var onClickCallback;
         var ARC_ANGLE = TAU / DATA.length;
+
+        var api = {
+            onClick: function onClick(callback) {
+                onClickCallback = callback;
+            }
+        };
 
         /**
          * USE D3.JS TO BUILD THE GRAPH
@@ -44,7 +52,7 @@ var Graph;
             .append('g')
                 .attr('class', 'section hidden')
                 .on('mouseenter', onSectionMouseEnter)
-                .on('click', onSectionClick);
+                .on('click', onClickSection);
 
         //----- LOADING ANIMATION FOR EACH SECTION ---------// 
         dataGroup.transition()
@@ -66,7 +74,7 @@ var Graph;
             .data(getTextLines).enter()
             .append('tspan')
                 .attr('x', 0)
-                .attr('y', getAdjustedTextTop)
+                .attr('y', getLineY)
                 .text(getLine);
 
         /**
@@ -91,11 +99,13 @@ var Graph;
         }
 
         //----- ON SECTION CLICK  --------------------------// 
-        function onSectionClick(datum) {
+        function onClickSection(datum) {
             this.classList.remove('jello');
             setTimeout(function () { this.classList.add('jello'); }.bind(this));
             setTimeout(function () { this.classList.remove('jello'); }.bind(this), 1000);
-            console.log(datum);
+            if (typeof api.onClick === 'function') {
+                onClickCallback(datum);
+            }
         }
 
         //----- GET SECTION LOAD DELAY ---------------------// 
@@ -114,7 +124,9 @@ var Graph;
                 delta = ARC_ANGLE * (index + 1);
 
             // Calculate the text centroid
-            var centroidAngle = ARROW_ANGLE + (angle + delta) / 2;
+            var startAngle = angle + ARROW_ANGLE - (2 * MIDDLE_PAD_ANGLE);
+            var endAngle = delta + ARROW_ANGLE - (2 * MIDDLE_PAD_ANGLE);
+            var centroidAngle = (startAngle + endAngle) / 2;
             datum.centroid = [
                 MIDDLE_RADIUS * cos(centroidAngle),
                 MIDDLE_RADIUS * sin(centroidAngle),
@@ -180,14 +192,18 @@ var Graph;
         }
 
         //----- GET THE ADJUSTED TEXT TOP ------------------// 
-        function getAdjustedTextTop(line, index, lines) {
-            return (2 * SQRT2 * DIAMETER * index - lines.length - 1) / 100
+        function getLineY(line, index, lines) {
+            return FONT_SIZE * index
+                - (lines.length * FONT_SIZE + (lines.length - 1) * LINE_SPACING) / 2
+                + (LINE_SPACING * index);
         }
 
         //----- GET THE CURRENT LINE -----------------------// 
         function getLine(line) {
             return line;
         }
+
+        return api;
     };
 
 })(window.d3, window.Math.sin, window.Math.cos, 2*Math.PI, Math.SQRT2);
