@@ -39,15 +39,16 @@ var Graph;
          */
 
         //----- CREATE SVG CONTAINER WITH INNER GROUP ------// 
-        var svg = d3.select('.chart')
+        var chart = d3.select('.chart-container')
             .append('svg')
+                .attr('class', 'chart')
                 .attr('width', DIAMETER)
                 .attr('height', DIAMETER)
                 .append('g')
                     .attr('transform', getChartTranslation);
 
         //----- CREATE A GROUP FOR EACH DATUM --------------// 
-        var dataGroup = svg.selectAll('path')
+        var dataGroup = chart.selectAll('path')
             .data(DATA).enter()
             .append('g')
                 .attr('class', 'section hidden')
@@ -106,15 +107,28 @@ var Graph;
 
         //----- ON SECTION CLICK  --------------------------// 
         function onSectionClick(datum) {
+            // Remove hover class
             this.classList.remove('hover');
+
+            // This section is already selected and we're clicking it again...
             if (this.classList.contains('selected')) {
                 this.classList.remove('selected');
-            } else {
+                chart.node().parentElement.classList.remove('small');
+            }
+
+            // This section is not yet selected...
+            else {
+                if (! chart.node().parentElement.classList.contains('small')) {
+                    chart.node().parentElement.classList.add('small');
+                }
                 for (var i = 0, len = this.parentElement.children.length; i < len; i++) {
                     this.parentElement.children[i].classList.remove('selected');
                 }
                 this.classList.add('selected');
             }
+
+
+            // Call the section click callback
             if (typeof api.onSectionClick === 'function') {
                 onSectionClickCallback(datum);
             }

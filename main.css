@@ -1,10 +1,9 @@
 body {
     margin: 0;
-    height: 100vh;
 }
 
-.chart {
-    height: 100%;
+.chart-container {
+    height: 100vh;
     padding: 0;
     margin: 0;
     display: -webkit-box;
@@ -14,6 +13,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.chart {
+    transition: transform 0.2s ease;
+}
+
+.chart.small {
+    transform: translate(-105%,-50%) scale(0.75,0.75);
 }
 
 .hidden {
@@ -26,32 +33,12 @@ body {
     font-family: sans-serif;
     text-anchor: middle;
     text-transform: uppercase;
-    -webkit-animation-duration: 0.25s !important;
-    -moz-animation-duration: 0.25s !important;
-    -webkit-animation-delay: 0 !important;
-    -moz-animation-delay: 0 !important;
+    transition: transform 0.2s ease;
 }
 
-@keyframes hover {
-    from {
-        transform: scale3d(1, 1, 1);
-    }
-    to {
-        transform: scale3d(1.05, 1.05, 1.05);
-    }
+.section.hover {
+    transform: scale3d(1.05, 1.05, 1.05);
 }
-.hover {
-    animation-name: hover;
-}
-
-@keyframes selected {
-    from {
-        transform: scale3d(1.05, 1.05, 1.05);
-    }
-    to {
-        transform: scale3d(1.1, 1.1, 1.1);
-    }
-}
-.selected {
-    animation-name: selected;
+.section.selected {
+    transform: scale3d(1.1, 1.1, 1.1);
 }
