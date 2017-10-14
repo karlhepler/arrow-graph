@@ -31,7 +31,9 @@ var Graph;
         var api = {
             onSectionClick: function onSectionClick(callback) {
                 onSectionClickCallback = callback;
-            }
+            },
+            hideContentContainer: hideContentContainer,
+            showContentContainer: showContentContainer,
         };
 
         /**
@@ -39,7 +41,7 @@ var Graph;
          */
 
         //----- CREATE SVG CONTAINER WITH INNER GROUP ------// 
-        var chart = d3.select('.chart-container')
+        api.chart = d3.select('.chart-container')
             .append('svg')
                 .attr('class', function () {
                     this.parentElement.getElementsByClassName('title')[0].classList.remove('hidden');
@@ -51,7 +53,7 @@ var Graph;
                     .attr('transform', getChartTranslation);
 
         //----- CREATE A GROUP FOR EACH DATUM --------------// 
-        var dataGroup = chart.selectAll('path')
+        var dataGroup = api.chart.selectAll('path')
             .data(DATA).enter()
             .append('g')
                 .attr('class', 'section hidden')
@@ -115,18 +117,13 @@ var Graph;
 
             // This section is already selected and we're clicking it again...
             if (this.classList.contains('selected')) {
-                this.classList.remove('selected');
-                chart.node().parentElement.parentElement.classList.remove('small');
-                chart.node().parentElement.parentElement.style.width = null;
-                chart.node().parentElement.parentElement.style.height = null;
+                hideContentContainer();
             }
 
             // This section is not yet selected...
             else {
-                if (! chart.node().parentElement.parentElement.classList.contains('small')) {
-                    chart.node().parentElement.parentElement.classList.add('small');
-                    chart.node().parentElement.parentElement.style.width = DIAMETER + 'px';
-                    chart.node().parentElement.parentElement.style.height = DIAMETER + 'px';
+                if (! api.chart.node().parentElement.parentElement.classList.contains('small')) {
+                    showContentContainer();
                 }
                 for (var i = 0, len = this.parentElement.children.length; i < len; i++) {
                     this.parentElement.children[i].classList.remove('selected');
@@ -233,6 +230,31 @@ var Graph;
         //----- GET THE CURRENT LINE -----------------------// 
         function getLine(line) {
             return line;
+        }
+
+        //----- SHOW CONTENT -------------------------------// 
+        function showContentContainer() {
+            api.chart.node().parentElement.parentElement.classList.add('small');
+            api.chart.node().parentElement.parentElement.style.width = DIAMETER + 'px';
+            api.chart.node().parentElement.parentElement.style.height = DIAMETER + 'px';
+            api.chart.node().parentElement.parentElement.nextElementSibling.classList.remove('nodisplay');
+            setTimeout(function () {
+                api.chart.node().parentElement.parentElement.nextElementSibling.classList.remove('hidden');
+            });
+        }
+
+        //----- HIDE CONTENT -------------------------------// 
+        function hideContentContainer() {
+            for (var i = 0, len = api.chart.node().children.length; i < len; i++) {
+                api.chart.node().children[i].classList.remove('selected');
+            }
+            api.chart.node().parentElement.parentElement.classList.remove('small');
+            api.chart.node().parentElement.parentElement.style.width = null;
+            api.chart.node().parentElement.parentElement.style.height = null;
+            api.chart.node().parentElement.parentElement.nextElementSibling.classList.add('hidden');
+            setTimeout(function () {
+                api.chart.node().parentElement.parentElement.nextElementSibling.classList.add('nodisplay');
+            }, 200);
         }
 
         return api;

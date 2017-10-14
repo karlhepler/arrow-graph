@@ -15,9 +15,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: width 0.2s ease, height 0.2s ease, transform 0.2s ease;
 }
-
 .chart-container.small {
     transform: scale(0.75, 0.75);
 }
@@ -39,15 +38,41 @@ body {
     text-transform: uppercase;
     transition: transform 0.2s ease, opacity 0.2s ease;
 }
-
-.chart-container .section.hidden,
-.chart-container .title.hidden {
-    opacity: 0;
-}
-
 .chart-container .section.hover {
     transform: scale3d(1.05, 1.05, 1.05);
 }
 .chart-container .section.selected {
     transform: scale3d(1.1, 1.1, 1.1);
+}
+
+.chart-content-container {
+    transition: opacity 0.2s ease;
+    position: absolute;
+    top: 20px; right: 20px;
+    width: 65%;
+}
+.chart-content-container .chart-content {
+    padding: 30px;
+    max-height: calc(100vh - 100px);
+    overflow: auto;
+}
+.chart-content-container .close-btn {
+    position: absolute;
+    right: 0;
+    border: none;
+    -webkit-appearance: none;
+    background: none;
+    font-size: 50px;
+    line-height: 0.5;
+    cursor: pointer;
+    font-family: sans-serif;
+    outline: none;
+}
+
+.hidden {
+    opacity: 0;
+}
+
+.nodisplay {
+    display: none;
 }
