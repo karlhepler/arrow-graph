@@ -109,6 +109,9 @@ var Graph;
             if (this.classList.contains('selected')) {
                 this.classList.remove('selected');
             } else {
+                for (var i = 0, len = this.parentElement.children.length; i < len; i++) {
+                    this.parentElement.children[i].classList.remove('selected');
+                }
                 this.classList.add('selected');
             }
             if (typeof api.onClick === 'function') {
