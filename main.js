@@ -25,12 +25,12 @@ var Graph;
 
     //----- GRAPH CONSTRUCTOR --------------------------// 
     Graph = function Graph(DATA) {
-        var onClickCallback;
+        var onSectionClickCallback;
         var ARC_ANGLE = TAU / DATA.length;
 
         var api = {
-            onClick: function onClick(callback) {
-                onClickCallback = callback;
+            onSectionClick: function onSectionClick(callback) {
+                onSectionClickCallback = callback;
             }
         };
 
@@ -53,7 +53,7 @@ var Graph;
                 .attr('class', 'section hidden')
                 .on('mouseenter', onSectionMouseEnter)
                 .on('mouseleave', onSectionMouseLeave)
-                .on('click', onClickSection);
+                .on('click', onSectionClick);
 
         //----- LOADING ANIMATION FOR EACH SECTION ---------// 
         dataGroup.transition()
@@ -105,7 +105,8 @@ var Graph;
         }
 
         //----- ON SECTION CLICK  --------------------------// 
-        function onClickSection(datum) {
+        function onSectionClick(datum) {
+            this.classList.remove('hover');
             if (this.classList.contains('selected')) {
                 this.classList.remove('selected');
             } else {
@@ -114,8 +115,8 @@ var Graph;
                 }
                 this.classList.add('selected');
             }
-            if (typeof api.onClick === 'function') {
-                onClickCallback(datum);
+            if (typeof api.onSectionClick === 'function') {
+                onSectionClickCallback(datum);
             }
         }
 
