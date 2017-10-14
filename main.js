@@ -52,12 +52,13 @@ var Graph;
             .append('g')
                 .attr('class', 'section hidden')
                 .on('mouseenter', onSectionMouseEnter)
+                .on('mouseleave', onSectionMouseLeave)
                 .on('click', onClickSection);
 
         //----- LOADING ANIMATION FOR EACH SECTION ---------// 
         dataGroup.transition()
             .delay(getSectionLoadDelay)
-            .attr('class', 'section animated bounceIn');
+            .attr('class', 'section animated pulse');
 
         //----- CREATE THE PATH & INSERT THE SECTIONS ------// 
         dataGroup.append('path')
@@ -92,17 +93,24 @@ var Graph;
 
         //----- ON SECTION MOUSE ENTER ---------------------// 
         function onSectionMouseEnter() {
-            this.classList.remove('bounceIn');
             this.classList.remove('pulse');
-            setTimeout(function () { this.classList.add('pulse'); }.bind(this))
-            setTimeout(function () { this.classList.remove('pulse'); }.bind(this), 1000);
+            if (! this.classList.contains('selected')) {
+                this.classList.add('hover');
+            }
+        }
+
+        //----- ON SECTION MOUSE LEAVE ---------------------// 
+        function onSectionMouseLeave() {
+            this.classList.remove('hover');
         }
 
         //----- ON SECTION CLICK  --------------------------// 
         function onClickSection(datum) {
-            this.classList.remove('jello');
-            setTimeout(function () { this.classList.add('jello'); }.bind(this));
-            setTimeout(function () { this.classList.remove('jello'); }.bind(this), 1000);
+            if (this.classList.contains('selected')) {
+                this.classList.remove('selected');
+            } else {
+                this.classList.add('selected');
+            }
             if (typeof api.onClick === 'function') {
                 onClickCallback(datum);
             }

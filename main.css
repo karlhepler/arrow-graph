@@ -25,8 +25,32 @@ body {
     font-family: sans-serif;
     text-anchor: middle;
     text-transform: uppercase;
-    -webkit-animation-duration: 0.5s !important;
-    -moz-animation-duration: 0.5s !important;
+    -webkit-animation-duration: 0.25s !important;
+    -moz-animation-duration: 0.25s !important;
     -webkit-animation-delay: 0 !important;
     -moz-animation-delay: 0 !important;
+}
+
+@keyframes hover {
+    from {
+        transform: scale3d(1, 1, 1);
+    }
+    to {
+        transform: scale3d(1.05, 1.05, 1.05);
+    }
+}
+.hover {
+    animation-name: hover;
+}
+
+@keyframes selected {
+    from {
+        transform: scale3d(1.05, 1.05, 1.05);
+    }
+    to {
+        transform: scale3d(1.1, 1.1, 1.1);
+    }
+}
+.selected {
+    animation-name: selected;
 }
