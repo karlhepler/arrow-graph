@@ -1,6 +1,6 @@
 var Graph;
 
-(function (d3, sin, cos, TAU, SQRT2, undefined) {
+(function (d3, sin, cos, TAU, SQRT2, title, undefined) {
     'use strict';
 
         //----- SETTINGS -----------------------------------// 
@@ -41,7 +41,10 @@ var Graph;
         //----- CREATE SVG CONTAINER WITH INNER GROUP ------// 
         var chart = d3.select('.chart-container')
             .append('svg')
-                .attr('class', 'chart')
+                .attr('class', function () {
+                    this.parentElement.getElementsByClassName('title')[0].classList.remove('hidden');
+                    return 'chart';
+                })
                 .attr('width', DIAMETER)
                 .attr('height', DIAMETER)
                 .append('g')
@@ -113,20 +116,23 @@ var Graph;
             // This section is already selected and we're clicking it again...
             if (this.classList.contains('selected')) {
                 this.classList.remove('selected');
-                chart.node().parentElement.classList.remove('small');
+                chart.node().parentElement.parentElement.classList.remove('small');
+                chart.node().parentElement.parentElement.style.width = null;
+                chart.node().parentElement.parentElement.style.height = null;
             }
 
             // This section is not yet selected...
             else {
-                if (! chart.node().parentElement.classList.contains('small')) {
-                    chart.node().parentElement.classList.add('small');
+                if (! chart.node().parentElement.parentElement.classList.contains('small')) {
+                    chart.node().parentElement.parentElement.classList.add('small');
+                    chart.node().parentElement.parentElement.style.width = DIAMETER + 'px';
+                    chart.node().parentElement.parentElement.style.height = DIAMETER + 'px';
                 }
                 for (var i = 0, len = this.parentElement.children.length; i < len; i++) {
                     this.parentElement.children[i].classList.remove('selected');
                 }
                 this.classList.add('selected');
             }
-
 
             // Call the section click callback
             if (typeof api.onSectionClick === 'function') {
