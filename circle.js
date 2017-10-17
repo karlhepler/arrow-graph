@@ -1,4 +1,4 @@
-var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, clientHeight, undefined) {
+var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, random, clientHeight, undefined) {
     'use strict';
 
         //----- SETTINGS -----------------------------------// 
@@ -19,7 +19,18 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, clientHeight, undefined) 
         INNER_RADIUS = OUTER_RADIUS - OUTER_RADIUS * INNER_RATIO,
         INNER_PAD_ANGLE = ARC_PADDING / INNER_RADIUS,
         MIDDLE_RADIUS = OUTER_RADIUS / 2 + INNER_RADIUS / 2,
-        MIDDLE_PAD_ANGLE = ARC_PADDING / MIDDLE_RADIUS;
+        MIDDLE_PAD_ANGLE = ARC_PADDING / MIDDLE_RADIUS,
+
+        //----- COLORS -------------------------------------// 
+        COLORS = [
+             'rgb(62, 165, 218)',
+             'rgb(137, 194, 82)',
+             'rgb(68, 176, 84)',
+             'rgb(34, 139, 75)',
+             'rgb(24, 99, 59)',
+             'rgb(55, 175, 115)',
+             'rgb(41, 162, 150)',
+        ];
 
     //----- GRAPH CONSTRUCTOR --------------------------// 
     return function Graph(root) {
@@ -146,8 +157,7 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, clientHeight, undefined) 
 
         //----- GET SECTION FILL COLOR ---------------------// 
         function getSectionFillColor(elem) {
-            return 'red';
-            // return elem.color;
+            return COLORS[~~(random()*COLORS.length)];
         }
 
         //----- GET THE SECTION ----------------------------// 
@@ -269,4 +279,4 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, clientHeight, undefined) 
         return api;
     };
 
-})(window.d3, window.Math.sin, window.Math.cos, 2*Math.PI, Math.SQRT2, document.documentElement.clientHeight);
+})(d3, Math.sin, Math.cos, 2*Math.PI, Math.SQRT2, Math.random, document.documentElement.clientHeight);
