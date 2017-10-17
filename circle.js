@@ -280,3 +280,10 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, random, clientHeight, und
     };
 
 })(d3, Math.sin, Math.cos, 2*Math.PI, Math.SQRT2, Math.random, document.documentElement.clientHeight);
+
+document.addEventListener('DOMContentLoaded', function (e) { 
+    var circles = document.getElementsByClassName('Circle')
+    for (var i = 0, len = circles.length; i < len; i++) {
+        new CircleGraph(circles[i]);
+    }
+});
