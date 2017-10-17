@@ -1,10 +1,8 @@
-var Graph;
-
-(function (d3, sin, cos, TAU, SQRT2, title, undefined) {
+var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, clientHeight, undefined) {
     'use strict';
 
         //----- SETTINGS -----------------------------------// 
-    var DIAMETER = 500,
+    var DIAMETER = clientHeight,
         INNER_RATIO = 0.5,
         GRAPH_PADDING = 30,
         ARC_PADDING = 3,
@@ -24,16 +22,15 @@ var Graph;
         MIDDLE_PAD_ANGLE = ARC_PADDING / MIDDLE_RADIUS;
 
     //----- GRAPH CONSTRUCTOR --------------------------// 
-    Graph = function Graph(DATA) {
-        var onSectionClickCallback;
-        var ARC_ANGLE = TAU / DATA.length;
+    return function Graph(root) {
+        var sections = root.getElementsByClassName('CircleModal__section');
+        var ARC_ANGLE = TAU / sections.length;
+        var graph = root.getElementsByClassName('CircleGraph')[0];
+        var modal = root.getElementsByClassName('CircleModal')[0];
 
         var api = {
-            onSectionClick: function onSectionClick(callback) {
-                onSectionClickCallback = callback;
-            },
-            hideContentContainer: hideContentContainer,
-            showContentContainer: showContentContainer,
+            openCircleModal: openCircleModal,
+            closeCircleModal: closeCircleModal,
         };
 
         /**
@@ -41,30 +38,27 @@ var Graph;
          */
 
         //----- CREATE SVG CONTAINER WITH INNER GROUP ------// 
-        api.chart = d3.select('.chart-container')
+        var svg = d3.select(graph)
             .append('svg')
-                .attr('class', function () {
-                    this.parentElement.getElementsByClassName('title')[0].classList.remove('hidden');
-                    return 'chart';
-                })
+                .attr('class', 'CircleGraph__svg')
                 .attr('width', DIAMETER)
                 .attr('height', DIAMETER)
                 .append('g')
                     .attr('transform', getChartTranslation);
 
-        //----- CREATE A GROUP FOR EACH DATUM --------------// 
-        var dataGroup = api.chart.selectAll('path')
-            .data(DATA).enter()
+        //----- CREATE A GROUP FOR EACH ELEM --------------// 
+        var dataGroup = svg.selectAll('path')
+            .data(sections).enter()
             .append('g')
-                .attr('class', 'section hidden')
-                .on('mouseenter', onSectionMouseEnter)
-                .on('mouseleave', onSectionMouseLeave)
-                .on('click', onSectionClick);
+                .attr('class', 'CircleSection CircleSection--hidden')
+                .on('mouseenter', onMouseEnterSection)
+                .on('mouseleave', onMouseLeaveSection)
+                .on('click', onClickSection);
 
         //----- LOADING ANIMATION FOR EACH SECTION ---------// 
         dataGroup.transition()
             .delay(getSectionLoadDelay)
-            .attr('class', 'section animated pulse');
+            .attr('class', 'CircleSection');
 
         //----- CREATE THE PATH & INSERT THE SECTIONS ------// 
         dataGroup.append('path')
@@ -73,6 +67,7 @@ var Graph;
 
         //----- CREATE TEXT AROUND CENTROID ----------------// 
         var text = dataGroup.append('text')
+            .attr('class', 'CircleSection__label')
             .attr('font-size', FONT_SIZE)
             .attr('transform', getTextTranslation);
 
@@ -98,57 +93,55 @@ var Graph;
         }
 
         //----- ON SECTION MOUSE ENTER ---------------------// 
-        function onSectionMouseEnter() {
-            this.classList.remove('pulse');
-            if (! this.classList.contains('selected')) {
-                this.classList.add('hover');
+        function onMouseEnterSection() {
+            if (! this.classList.contains('CircleSection--selected')) {
+                this.classList.add('CircleSection--hover');
             }
         }
 
         //----- ON SECTION MOUSE LEAVE ---------------------// 
-        function onSectionMouseLeave() {
-            this.classList.remove('hover');
+        function onMouseLeaveSection() {
+            this.classList.remove('CircleSection--hover');
         }
 
         //----- ON SECTION CLICK  --------------------------// 
-        function onSectionClick(datum) {
+        function onClickSection(elem) {
             // Remove hover class
-            this.classList.remove('hover');
+            this.classList.remove('CircleSection--hover');
 
             // This section is already selected and we're clicking it again...
-            if (this.classList.contains('selected')) {
-                hideContentContainer();
+            if (this.classList.contains('CircleSection--selected')) {
+                closeCircleModal();
             }
 
             // This section is not yet selected...
             else {
-                if (! api.chart.node().parentElement.parentElement.classList.contains('small')) {
-                    showContentContainer();
+                if (! root.getElementsByClassName('CircleGraph')[0].classList.contains('CircleGraph---zoom')) {
+                    openCircleModal();
                 }
-                for (var i = 0, len = this.parentElement.children.length; i < len; i++) {
-                    this.parentElement.children[i].classList.remove('selected');
-                }
-                this.classList.add('selected');
-            }
 
-            // Call the section click callback
-            if (typeof api.onSectionClick === 'function') {
-                onSectionClickCallback(datum);
+                var circleSections = graph.getElementsByClassName('CircleSection');
+                for (var i = 0, len = circleSections.length; i < len; i++) {
+                    circleSections[i].classList.remove('CircleSection--selected');
+                }
+
+                this.classList.add('CircleSection--selected');
             }
         }
 
         //----- GET SECTION LOAD DELAY ---------------------// 
-        function getSectionLoadDelay(datum, index) {
+        function getSectionLoadDelay(elem, index) {
             return index * SECTION_LOAD_DELAY_MS;
         }
 
         //----- GET SECTION FILL COLOR ---------------------// 
-        function getSectionFillColor(datum) {
-            return datum.color;
+        function getSectionFillColor(elem) {
+            return 'red';
+            // return elem.color;
         }
 
         //----- GET THE SECTION ----------------------------// 
-        function getSectionPath(datum, index) {
+        function getSectionPath(elem, index) {
             var angle = ARC_ANGLE * index,
                 delta = ARC_ANGLE * (index + 1);
 
@@ -156,7 +149,7 @@ var Graph;
             var startAngle = angle + ARROW_ANGLE - (2 * MIDDLE_PAD_ANGLE);
             var endAngle = delta + ARROW_ANGLE - (2 * MIDDLE_PAD_ANGLE);
             var centroidAngle = (startAngle + endAngle) / 2;
-            datum.centroid = [
+            elem.centroid = [
                 MIDDLE_RADIUS * cos(centroidAngle),
                 MIDDLE_RADIUS * sin(centroidAngle),
             ];
@@ -196,13 +189,13 @@ var Graph;
         }
 
         //----- GET TEXT TRANSLATION -----------------------// 
-        function getTextTranslation(datum) {
-            return 'translate(' + datum.centroid + ')';
+        function getTextTranslation(elem) {
+            return 'translate(' + elem.centroid + ')';
         }
 
         //----- GET TEXT LINES FOR WORD WRAPPING -----------// 
-        function getTextLines(datum) {
-            var words = datum.label.split(' ');
+        function getTextLines(elem) {
+            var words = elem.getElementsByClassName('CircleModal__title')[0].textContent.split(' ');
             var lines = [words[0]];
             var linenum = 0;
 
@@ -233,31 +226,25 @@ var Graph;
         }
 
         //----- SHOW CONTENT -------------------------------// 
-        function showContentContainer() {
-            api.chart.node().parentElement.parentElement.classList.add('small');
-            api.chart.node().parentElement.parentElement.style.width = DIAMETER + 'px';
-            api.chart.node().parentElement.parentElement.style.height = DIAMETER + 'px';
-            api.chart.node().parentElement.parentElement.nextElementSibling.classList.remove('nodisplay');
-            setTimeout(function () {
-                api.chart.node().parentElement.parentElement.nextElementSibling.classList.remove('hidden');
-            });
+        function openCircleModal() {
+            graph.classList.add('CircleGraph--zoom');
+            graph.style.width = DIAMETER + 'px';
+            graph.style.height = DIAMETER + 'px';
+            modal.classList.remove('CircleModal--hidden');
         }
 
         //----- HIDE CONTENT -------------------------------// 
-        function hideContentContainer() {
-            for (var i = 0, len = api.chart.node().children.length; i < len; i++) {
-                api.chart.node().children[i].classList.remove('selected');
+        function closeCircleModal() {
+            for (var i = 0, len = svg.node().children.length; i < len; i++) {
+                svg.node().children[i].classList.remove('CircleSection--selected');
             }
-            api.chart.node().parentElement.parentElement.classList.remove('small');
-            api.chart.node().parentElement.parentElement.style.width = null;
-            api.chart.node().parentElement.parentElement.style.height = null;
-            api.chart.node().parentElement.parentElement.nextElementSibling.classList.add('hidden');
-            setTimeout(function () {
-                api.chart.node().parentElement.parentElement.nextElementSibling.classList.add('nodisplay');
-            }, 200);
+            graph.classList.remove('CircleGraph--zoom');
+            graph.style.width = null;
+            graph.style.height = null;
+            modal.classList.add('CircleModal--hidden');
         }
 
         return api;
     };
 
-})(window.d3, window.Math.sin, window.Math.cos, 2*Math.PI, Math.SQRT2);
+})(window.d3, window.Math.sin, window.Math.cos, 2*Math.PI, Math.SQRT2, document.documentElement.clientHeight);

@@ -1,1 +1,1 @@
-uglifyjs --compress --mangle --output main.dist.js -- main.js
+uglifyjs --compress --mangle --output circle.dist.js -- circle.js
