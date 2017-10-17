@@ -4,7 +4,7 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, clientHeight, undefined) 
         //----- SETTINGS -----------------------------------// 
     var DIAMETER = clientHeight,
         INNER_RATIO = 0.5,
-        GRAPH_PADDING = 30,
+        GRAPH_PADDING = 50,
         ARC_PADDING = 3,
         ARROW_ANGLE = 0.1,
         SECTION_LOAD_DELAY_MS = 100,

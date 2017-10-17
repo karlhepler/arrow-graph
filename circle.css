@@ -20,22 +20,27 @@
 }
 
 .CircleGraph.CircleGraph--zoom {
-    transform: scale(0.75, 0.75);
+    transform: scale(0.5, 0.5)
+               translate(-30vw, -45vh);
 }
 
 .CircleGraph__title {
     position: absolute;
     margin: 0; padding: 0;
     line-height: 1;
-    font-size: 18px;
+    font-size: 32px;
     font-family: sans-serif;
     transition: opacity 1s ease;
 }
 
 .CircleSection {
+    fill: #ffffff;
+    font-family: sans-serif;
+    text-anchor: middle;
+    text-transform: uppercase;
     cursor: pointer;
-    transition: opacity 0.2s ease-out,
-                transform 0.2 ease-out;
+    transition: transform 0.2s ease,
+                opacity 0.2s ease;
 }
 
 .CircleSection.CircleSection--hidden {
