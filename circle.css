@@ -16,12 +16,17 @@
     justify-content: center;
     transition: width 0.2s ease,
                 height 0.2s ease,
-                transform 0.2s ease;
+                transform 0.2s ease,
+                opacity 0.2s ease-in;
+}
+
+.CircleGraph.CircleGraph--hidden {
+    opacity: 0;
 }
 
 .CircleGraph.CircleGraph--zoom {
-    transform: scale(0.5, 0.5)
-               translate(-30vw, -45vh);
+    transform: scale(0.6, 0.6)
+               translate(-19vw, -30vh);
 }
 
 .CircleGraph__title {

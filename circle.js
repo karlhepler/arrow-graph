@@ -2,7 +2,7 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, clientHeight, undefined) 
     'use strict';
 
         //----- SETTINGS -----------------------------------// 
-    var DIAMETER = clientHeight,
+    var DIAMETER = clientHeight - 100,
         INNER_RATIO = 0.5,
         GRAPH_PADDING = 50,
         ARC_PADDING = 3,
@@ -28,6 +28,11 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, clientHeight, undefined) 
         var graph = root.getElementsByClassName('CircleGraph')[0];
         var modal = root.getElementsByClassName('CircleModal')[0];
 
+        // Listen for modal close button click
+        root.getElementsByClassName('CircleModal__close-btn')[0]
+            .addEventListener('click', onClickModalCloseBtn);
+
+        // Define the API
         var api = {
             openCircleModal: openCircleModal,
             closeCircleModal: closeCircleModal,
@@ -40,7 +45,12 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, clientHeight, undefined) 
         //----- CREATE SVG CONTAINER WITH INNER GROUP ------// 
         var svg = d3.select(graph)
             .append('svg')
-                .attr('class', 'CircleGraph__svg')
+                .attr('class', function () {
+                    setTimeout(function () {
+                        graph.classList.remove('CircleGraph--hidden');
+                    }, 200);
+                    return 'CircleGraph__svg';
+                })
                 .attr('width', DIAMETER)
                 .attr('height', DIAMETER)
                 .append('g')
@@ -117,7 +127,7 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, clientHeight, undefined) 
             // This section is not yet selected...
             else {
                 if (! root.getElementsByClassName('CircleGraph')[0].classList.contains('CircleGraph---zoom')) {
-                    openCircleModal();
+                    openCircleModal(elem);
                 }
 
                 var circleSections = graph.getElementsByClassName('CircleSection');
@@ -226,10 +236,16 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, clientHeight, undefined) 
         }
 
         //----- SHOW CONTENT -------------------------------// 
-        function openCircleModal() {
+        function openCircleModal(elem) {
             graph.classList.add('CircleGraph--zoom');
             graph.style.width = DIAMETER + 'px';
             graph.style.height = DIAMETER + 'px';
+
+            for (var i = 0, len = sections.length; i < len; i++) {
+                sections[i].style.display = null;
+            }
+            elem.style.display = 'block';
+
             modal.classList.remove('CircleModal--hidden');
         }
 
@@ -237,11 +253,17 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, clientHeight, undefined) 
         function closeCircleModal() {
             for (var i = 0, len = svg.node().children.length; i < len; i++) {
                 svg.node().children[i].classList.remove('CircleSection--selected');
+                sections[i].style.display = null;
             }
             graph.classList.remove('CircleGraph--zoom');
             graph.style.width = null;
             graph.style.height = null;
             modal.classList.add('CircleModal--hidden');
+        }
+
+        //----- ON CLICK MODAL CLOSE BUTTON ----------------// 
+        function onClickModalCloseBtn(e) {
+            closeCircleModal();
         }
 
         return api;
