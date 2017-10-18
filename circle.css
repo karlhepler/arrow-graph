@@ -1,102 +1,83 @@
 .Circle {
-    position: relative;
+  position: relative;
 }
-
 .CircleGraph {
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    margin: 0;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: width 0.2s ease,
-                height 0.2s ease,
-                transform 0.2s ease,
-                opacity 0.2s ease-in;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.2s ease, height 0.2s ease, transform 0.5s ease, opacity 0.2s ease-in;
 }
-
 .CircleGraph.CircleGraph--hidden {
-    opacity: 0;
+  opacity: 0;
 }
-
 .CircleGraph.CircleGraph--zoom {
-    transform: scale(0.5, 0.5) translate(-50%, -50%);
+  transform: scale(0.6, 0.6) translate(-25%, -25%);
 }
-
 .CircleGraph__title {
-    position: absolute;
-    margin: 0; padding: 0;
-    line-height: 1;
-    font-size: 32px;
-    font-family: sans-serif;
-    transition: opacity 1s ease;
-    max-width: 10em;
-    text-align: center;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-family: sans-serif;
+  transition: opacity 1s ease;
+  text-align: center;
 }
-
 .CircleSection {
-    fill: #ffffff;
-    font-family: sans-serif;
-    text-anchor: middle;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: transform 0.2s ease,
+  fill: #ffffff;
+  font-family: sans-serif;
+  text-anchor: middle;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease,
                 opacity 0.2s ease;
 }
-
 .CircleSection.CircleSection--hidden {
-    opacity: 0;
-    transform: scale3d(0.75, 0.75, 0.75);
+  opacity: 0;
+  transform: scale3d(0.75, 0.75, 0.75);
 }
-
-.CircleSection.CircleSection---hover {
-    transform: scale3d(1.05, 1.05, 1.05);
+.CircleSection.CircleSection--hover {
+  transform: scale3d(1.01, 1.01, 1.01);
 }
-
 .CircleSection.CircleSection--selected {
-    transform: scale3d(1.1, 1.1, 1.1);
+  transform: scale3d(1.01, 1.01, 1.01);
+  opacity: 0.5;
 }
-
 .CircleModal {
-    position: absolute;
-    top: 20px; right: 20px;
-    width: 55%;
-    transition: opacity 0.2s ease-out;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 55%;
+  transition: opacity 0.2s ease-out;
 }
-
 .CircleModal.CircleModal--hidden {
-    opacity: 0;
+  opacity: 0;
 }
-
 .CircleModal__close-btn {
-    position: absolute;
-    right: 0;
-    border: none;
-    -webkit-appearance: none;
-    background: none;
-    font-size: 50px;
-    line-height: 0.5;
-    cursor: pointer;
-    font-family: sans-serif;
-    outline: none;
+  position: absolute;
+  right: 0;
+  border: none;
+  -webkit-appearance: none;
+  background: none;
+  font-size: 50px;
+  line-height: 0.5;
+  cursor: pointer;
+  font-family: sans-serif;
+  outline: none;
 }
-
 .CircleModal__section {
-    display: none;
-    padding: 30px;
-    max-height: calc(100vh - 100px);
-    overflow: auto;
+  display: none;
+  padding: 30px;
+  max-height: calc(100vh - 100px);
+  overflow: auto;
 }
-
 .CircleModal__title {
-    margin-top: 0 !important;
-}
-
-.CircleModal__body {
-
+  margin-top: 0 !important;
 }

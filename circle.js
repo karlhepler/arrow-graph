@@ -1,13 +1,14 @@
-var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, random, clientHeight, undefined) {
+var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, random, clientWidth, clientHeight, undefined) {
     'use strict';
 
         //----- SETTINGS -----------------------------------// 
-    var DIAMETER = clientHeight - 100,
+    var DIAMETER = (clientWidth > clientHeight ? clientHeight : clientWidth) - 100,
         INNER_RATIO = 0.5,
         GRAPH_PADDING = 50,
         ARC_PADDING = 3,
         ARROW_ANGLE = 0.1,
         SECTION_LOAD_DELAY_MS = 100,
+        TITLE_FONT_SIZE = DIAMETER * 0.03,
         FONT_SIZE_RATIO = 0.02,
         MAX_CHARS_PER_LINE = 10,
 
@@ -38,6 +39,8 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, random, clientHeight, und
         var ARC_ANGLE = TAU / sections.length;
         var graph = root.getElementsByClassName('CircleGraph')[0];
         var modal = root.getElementsByClassName('CircleModal')[0];
+        root.getElementsByClassName('CircleGraph__title')[0].style.fontSize = TITLE_FONT_SIZE+'px';
+        root.getElementsByClassName('CircleGraph__title')[0].style.maxWidth = (INNER_RADIUS*1.9)+'px';
 
         // Listen for modal close button click
         root.getElementsByClassName('CircleModal__close-btn')[0]
@@ -279,7 +282,7 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, random, clientHeight, und
         return api;
     };
 
-})(d3, Math.sin, Math.cos, 2*Math.PI, Math.SQRT2, Math.random, document.documentElement.clientHeight);
+})(d3, Math.sin, Math.cos, 2*Math.PI, Math.SQRT2, Math.random, document.documentElement.clientWidth, document.documentElement.clientHeight);
 
 document.addEventListener('DOMContentLoaded', function (e) { 
     var circles = document.getElementsByClassName('Circle')

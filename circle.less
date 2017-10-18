@@ -16,7 +16,7 @@
     justify-content: center;
     transition: width 0.2s ease,
                 height 0.2s ease,
-                transform 0.2s ease,
+                transform 0.5s ease,
                 opacity 0.2s ease-in;
 }
 
@@ -25,17 +25,15 @@
 }
 
 .CircleGraph.CircleGraph--zoom {
-    transform: scale(0.5, 0.5) translate(-50%, -50%);
+    transform: scale(0.6, 0.6) translate(-25%, -25%);
 }
 
 .CircleGraph__title {
     position: absolute;
     margin: 0; padding: 0;
     line-height: 1;
-    font-size: 32px;
     font-family: sans-serif;
     transition: opacity 1s ease;
-    max-width: 10em;
     text-align: center;
 }
 
@@ -54,12 +52,13 @@
     transform: scale3d(0.75, 0.75, 0.75);
 }
 
-.CircleSection.CircleSection---hover {
-    transform: scale3d(1.05, 1.05, 1.05);
+.CircleSection.CircleSection--hover {
+    transform: scale3d(1.01, 1.01, 1.01);
 }
 
 .CircleSection.CircleSection--selected {
-    transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale3d(1.01, 1.01, 1.01);
+    opacity: 0.5;
 }
 
 .CircleModal {
