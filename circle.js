@@ -30,7 +30,7 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, random, clientWidth, clie
              'rgb(34, 139, 75)',
              'rgb(24, 99, 59)',
              'rgb(55, 175, 115)',
-             'rgb(41, 162, 150)',
+             'rgb(41, 162, 150)'
         ];
 
     //----- GRAPH CONSTRUCTOR --------------------------// 
@@ -49,7 +49,7 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, random, clientWidth, clie
         // Define the API
         var api = {
             openCircleModal: openCircleModal,
-            closeCircleModal: closeCircleModal,
+            closeCircleModal: closeCircleModal
         };
 
         /**
@@ -111,7 +111,7 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, random, clientWidth, clie
         function getChartTranslation() {
             var translation = [
                 OUTER_RADIUS + GRAPH_PADDING,
-                OUTER_RADIUS + GRAPH_PADDING,
+                OUTER_RADIUS + GRAPH_PADDING
             ];
             return 'translate(' + translation + ')';
         }
@@ -174,7 +174,7 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, random, clientWidth, clie
             var centroidAngle = (startAngle + endAngle) / 2;
             elem.centroid = [
                 MIDDLE_RADIUS * cos(centroidAngle),
-                MIDDLE_RADIUS * sin(centroidAngle),
+                MIDDLE_RADIUS * sin(centroidAngle)
             ];
 
             // Create the new path
@@ -290,3 +290,4 @@ document.addEventListener('DOMContentLoaded', function (e) {
         new CircleGraph(circles[i]);
     }
 });
+
