@@ -20,18 +20,7 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, random, clientWidth, clie
         INNER_RADIUS = OUTER_RADIUS - OUTER_RADIUS * INNER_RATIO,
         INNER_PAD_ANGLE = ARC_PADDING / INNER_RADIUS,
         MIDDLE_RADIUS = OUTER_RADIUS / 2 + INNER_RADIUS / 2,
-        MIDDLE_PAD_ANGLE = ARC_PADDING / MIDDLE_RADIUS,
-
-        //----- COLORS -------------------------------------// 
-        COLORS = [
-             'rgb(62, 165, 218)',
-             'rgb(137, 194, 82)',
-             'rgb(68, 176, 84)',
-             'rgb(34, 139, 75)',
-             'rgb(24, 99, 59)',
-             'rgb(55, 175, 115)',
-             'rgb(41, 162, 150)'
-        ];
+        MIDDLE_PAD_ANGLE = ARC_PADDING / MIDDLE_RADIUS;
 
     //----- GRAPH CONSTRUCTOR --------------------------// 
     return function Graph(root) {
@@ -41,6 +30,19 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, random, clientWidth, clie
         var modal = root.getElementsByClassName('CircleModal')[0];
         root.getElementsByClassName('CircleGraph__title')[0].style.fontSize = TITLE_FONT_SIZE+'px';
         root.getElementsByClassName('CircleGraph__title')[0].style.maxWidth = (INNER_RADIUS*1.9)+'px';
+        var COLORS = [
+            'rgb(62, 165, 218)',
+            'rgb(137, 194, 82)',
+            'rgb(68, 176, 84)',
+            'rgb(34, 139, 75)',
+            'rgb(24, 99, 59)',
+            'rgb(55, 175, 115)',
+            'rgb(41, 162, 150)',
+            'rgb(16, 115, 185)',
+            'rgb(144, 146, 195)',
+            'rgb(47, 53, 144)',
+            'rgb(52, 61, 188)'
+        ];
 
         // Listen for modal close button click
         root.getElementsByClassName('CircleModal__close-btn')[0]
@@ -160,7 +162,10 @@ var CircleGraph = (function (d3, sin, cos, TAU, SQRT2, random, clientWidth, clie
 
         //----- GET SECTION FILL COLOR ---------------------// 
         function getSectionFillColor(elem) {
-            return COLORS[~~(random()*COLORS.length)];
+            var colorIndex = ~~(random()*COLORS.length);
+            var color = COLORS[colorIndex];
+            COLORS.splice(colorIndex, 1);
+            return color;
         }
 
         //----- GET THE SECTION ----------------------------// 
