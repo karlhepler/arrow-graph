@@ -27,22 +27,6 @@
   </div>
 
   {.repeated section collections}
-    {.equal?:typeName:"circle"}
-        <div class="Circle">
-            <div class="CircleGraph CircleGraph--hidden">
-                <h2 class="CircleGraph__title">{title}</h2>
-            </div>
-            <div class="CircleModal CircleModal--hidden">
-                <button class="CircleModal__close-btn">&times;</button>
-                {.repeated section items}
-                <article class="CircleModal__section">
-                    <h1 class="CircleModal__title">{title}</h1>
-                    <div class="CircleModal__body">{body}</div>
-                </article>
-                {.end}
-            </div>
-        </div>
-    {.or}
         <div class="parallax-item" data-url-id="{urlId}">
             <div class="title-desc-wrapper over-image {.background-source-video?} has-main-image has-background-video{.or}{.section mainImage} has-main-image{.or} no-main-image{.end}{.end}{.equal? @index 1} first{.end}" {.section mainImage}data-color-suggested="#{colorData.suggestedBgColor}"{.end}>
 
@@ -76,10 +60,26 @@
                     <div class="page-desc" data-content-field="description">{.section description}{@}{.end}</div>
                 </div>
                 </div>
-                {mainContent}
+                {.equal?:typeName:"circle"}
+                    <div class="Circle">
+                        <div class="CircleGraph CircleGraph--hidden">
+                            <h2 class="CircleGraph__title">{title}</h2>
+                        </div>
+                        <div class="CircleModal CircleModal--hidden">
+                            <button class="CircleModal__close-btn">&times;</button>
+                            {.repeated section items}
+                            <article class="CircleModal__section">
+                                <h1 class="CircleModal__title">{title}</h1>
+                                <div class="CircleModal__body">{body}</div>
+                            </article>
+                            {.end}
+                        </div>
+                    </div>
+                {.or}
+                    {mainContent}
+                {.end}
                 </div>
             </div>
         </div>
-    {.end}
   {.end}
 {.end}
